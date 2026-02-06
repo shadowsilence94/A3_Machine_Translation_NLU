@@ -2,6 +2,8 @@
 
 **Developed by:** Htut Ko Ko (st126010)
 
+* 👉  **Live App** : [huggingface.co/spaces/shadowsilence/burmese-english-translator](https://huggingface.co/spaces/shadowsilence/burmese-english-translator)
+
 This project implements a high-quality Burmese-to-English translation system using two approaches:
 
 1. **Fine-Tuned NLLB-200**: State-of-the-art multilingual model tailored for this task. (High Quality)

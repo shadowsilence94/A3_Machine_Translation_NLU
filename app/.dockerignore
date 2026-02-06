@@ -1,0 +1,8 @@
+nllb_model/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
+venv/
+env/
+.env

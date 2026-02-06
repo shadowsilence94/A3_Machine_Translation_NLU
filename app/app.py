@@ -120,14 +120,20 @@ def load_nllb():
         except Exception as e:
             print(f"Failed to load NLLB: {e}")
     else:
-        print("NLLB Model not found locally. Downloading base 'facebook/nllb-200-distilled-600M'...")
+        print("NLLB Model not found locally. Downloading fine-tuned model 'shadowsilence/burmese-nllb-model'...")
         try:
+            # Use our fine-tuned model uploaded to HF Hub
+            checkpoint = "shadowsilence/burmese-nllb-model"
+            # NLLB requires src_lang be set for correct tokenizer behavior
+            nllb_tokenizer = AutoTokenizer.from_pretrained(checkpoint, src_lang="mya_Mymr", tgt_lang="eng_Latn")
+            nllb_model = AutoModelForSeq2SeqLM.from_pretrained(checkpoint).to(DEVICE)
+            print("Remote Fine-Tuned NLLB Loaded.")
+        except Exception as e:
+            print(f"Failed to load Remote NLLB: {e}")
+            print("Falling back to base model...")
             checkpoint = "facebook/nllb-200-distilled-600M"
             nllb_tokenizer = AutoTokenizer.from_pretrained(checkpoint, src_lang="mya_Mymr", tgt_lang="eng_Latn")
             nllb_model = AutoModelForSeq2SeqLM.from_pretrained(checkpoint).to(DEVICE)
-            print("Base NLLB Loaded.")
-        except Exception as e:
-            print(f"Failed to load Base NLLB: {e}")
 
 def load_scratch_transformer():
     global scratch_model, sp_my, sp_en
