@@ -10,7 +10,7 @@ pinned: false
 
 **Developed by:** Htut Ko Ko (st126010)
 
-* 👉  **Live App** : [huggingface.co/spaces/shadowsilence/burmese-english-translator](https://huggingface.co/spaces/shadowsilence/burmese-english-translator)
+* 👉  **Live App** : [Web App here](https://shadowsilence-my-translator.hf.space/)
 
 This project implements high-quality machine translation systems for multiple languages (Burmese, Thai, Chinese, Vietnamese, Hindi, Nepali, Urdu, Tagalog, Kazakh, Bengali, German) to English using two approaches:
 
