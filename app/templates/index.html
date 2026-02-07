@@ -3,105 +3,449 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Burmese-English Translator</title>
+    <title>Ko Ko's NLU Translator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --bg-color: #f3f4f6;
+            --panel-bg: rgba(255, 255, 255, 0.95); /* Slightly transparent */
+            --text-color: #1f2937;
+            --border-color: #e5e7eb;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
         body {
-            font_family: sans-serif;
-            max_width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-image 0.5s ease-in-out, background-color 0.5s ease-in-out;
         }
+
         .container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        .translation-box {
+            width: 95%;
+            max-width: 1200px;
+            background-color: var(--panel-bg);
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            padding: 2rem;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            margin-top: 20px;
+            gap: 1.5rem;
+            backdrop-filter: blur(5px); /* Nice glass effect */
         }
-        textarea {
-            width: 100%;
-            height: 100px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            resize: vertical;
-            font-size: 16px;
+        
+        .disclaimer {
+            font-style: italic;
+            color: #6b7280;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
+
+        header {
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        /* ... remaining styles ... */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .model-options {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .model-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             cursor: pointer;
-            font-size: 16px;
-            align_self: flex-end;
+            font-weight: 500;
         }
-        button:hover {
-            background-color: #0056b3;
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-        .result-area {
-            background-color: #f9f9f9;
-            padding: 15px;
-            border: 1px solid #eee;
-            border-radius: 4px;
-            min-height: 50px;
+        
+        .status-indicator.active {
+            opacity: 1;
         }
-        .label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
+
+        .spinner {
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #e5e7eb;
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .translation-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            height: 60vh;
+            min-height: 400px;
+        }
+
+        .text-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            height: 100%;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        select {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            color: var(--text-color);
+            background-color: #fff;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        select:hover {
+            border-color: var(--primary-color);
+        }
+
+        select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+        }
+
+        textarea {
+            flex-grow: 1;
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            font-family: inherit;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            transition: all 0.2s;
+            box-sizing: border-box; 
+        }
+
+        textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        /* Placeholder styling */
+        textarea::placeholder {
+            color: #9ca3af;
+        }
+
+        .clear-btn {
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 0.875rem;
+            padding: 0;
+        }
+        
+        .clear-btn:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 768px) {
+            .translation-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                height: auto; /* Allow height to grow */
+            }
+            .container {
+                padding: 1.5rem;
+            }
+            textarea {
+                min-height: 200px; /* Fixed height for mobile */
+            }
+            .controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: 1rem;
+            color: #6b7280;
+            font-size: 0.8rem;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Burmese to English Translator</h1>
+        <header>
+            <h1>Ko Ko's Translator</h1>
+            <p class="disclaimer">
+                The Scratch model is trained on limited free datasets and probably giving the model generated result based on training.
+            </p>
+        </header>
         
-        <form method="POST">
-            <div class="translation-box">
-                <div>
-                    <span class="label">Burmese (Source):</span>
-                    <textarea name="source_text" placeholder="Enter Burmese text here...">{{ original }}</textarea>
-                </div>
-                
-                <button type="submit">Translate</button>
-
-                <div style="margin-top: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; background: #fff;">
-                    <strong>Select Model:</strong><br>
-                    <label style="margin-right: 15px; cursor: pointer;">
-                        <input type="radio" name="model_choice" value="nllb" {% if model_choice == 'nllb' %}checked{% endif %}> 
-                        Fine-Tuned NLLB (Recommended - High Quality)
-                    </label>
-                    <br>
-                    <label style="cursor: pointer;">
-                        <input type="radio" name="model_choice" value="scratch" {% if model_choice == 'scratch' %}checked{% endif %}> 
-                        Transformer from Scratch (Experimental - Low Resource)
-                    </label>
-                </div>
-                
-                {% if translation %}
-                <div>
-                    <span class="label">English (Target):</span>
-                    <div class="result-area">{{ translation }}</div>
-                </div>
-                {% endif %}
+        <div class="controls">
+            <div class="model-options">
+                <span>Model:</span>
+                <label class="model-option">
+                    <input type="radio" name="model_choice" value="nllb" checked onchange="updateModel()"> 
+                    NLLB (Bi-Directional)
+                </label>
+                <label class="model-option">
+                    <input type="radio" name="model_choice" value="scratch" onchange="updateModel()"> 
+                    Scratch Transformer (Foreign&#8594;Eng Only)
+                </label>
             </div>
-        </form>
+            <div id="global-status" class="status-indicator">
+                <div class="spinner"></div>
+                Translating...
+            </div>
+        </div>
+
+        <div class="translation-grid">
+            <!-- Left Panel: Foreign Language -->
+            <div class="text-panel">
+                <div class="panel-header">
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <select name="lang_choice" id="lang-select" onchange="handleLangChange()">
+                            <option value="my" selected>Burmese (Myanmar)</option>
+                            <option value="th">Thai</option>
+                            <option value="zh">Chinese</option>
+                            <option value="hi">Hindi (India)</option>
+                            <option value="ne">Nepali</option>
+                            <option value="ur">Urdu (Pakistan)</option>
+                            <option value="vi">Vietnamese</option>
+                            <option value="tl">Tagalog (Philippines)</option>
+                            <option value="kk">Kazakh</option>
+                            <option value="bn">Bengali</option>
+                            <option value="de">German</option>
+                        </select>
+                    </div>
+                    <button class="clear-btn" onclick="clearAll()">Clear All</button>
+                </div>
+                <textarea id="foreign-text" placeholder="Type Burmese, Thai, Chinese, etc. here..."></textarea>
+            </div>
+
+            <!-- Right Panel: English -->
+            <div class="text-panel">
+                <div class="panel-header">
+                    <span class="panel-title">English</span>
+                </div>
+                <textarea id="english-text" placeholder="Type English here..."></textarea>
+            </div>
+        </div>
     </div>
-    <div style="text-align: center; margin-top: 20px; color: #666;">
-        <p>NLP Project A3 - Burmese-English Neural Machine Translation</p>
-        <p>Developed by <strong>Htut Ko Ko (st126010)</strong></p>
-    </div>
+    
+    <footer>
+        <p>NLU project A3_Make Your Own Machine Translation Language by Htut Ko Ko (st126010)</p>
+    </footer>
+
+    <script>
+        const backgrounds = {
+            'my': 'url("/static/images/burmese_background.png")', /* Burmese Image */
+            'th': 'url("/static/images/thai_background.png")', /* Thai Image */
+            'zh': 'url("/static/images/chinese_background.png")', /* Chinese Image */
+            'hi': 'url("/static/images/hindi_background.png")', /* Hindi Image */
+            'ne': 'url("/static/images/nepali_background.png")', /* Nepali Image */
+            'ur': 'url("/static/images/urdu_background.png")', /* Urdu Image */
+            'vi': 'url("/static/images/vietnamese_background.png")', /* Vietnamese Image */
+            'tl': 'url("/static/images/tagalog_background.png")', /* Tagalog Image */
+            'kk': 'url("/static/images/kazakh_background.png")', /* Kazakh Image */
+            'bn': 'url("/static/images/bengali_background.png")', /* Bengali Image */
+            'de': 'url("/static/images/german_background.png")' /* German Image */
+        };
+
+        // Debounce function to limit API calls
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        const foreignText = document.getElementById('foreign-text');
+        const englishText = document.getElementById('english-text');
+        const langSelect = document.getElementById('lang-select');
+        const statusIndicator = document.getElementById('global-status');
+        let currentModel = 'nllb'; // Default
+
+        // Initialize background on load
+        window.addEventListener('load', () => {
+            updateBackground(langSelect.value);
+        });
+
+        function handleLangChange() {
+            const lang = langSelect.value;
+            updateBackground(lang);
+            triggerTranslation('f2e');
+        }
+
+        function updateBackground(lang) {
+            const bg = backgrounds[lang];
+            if (bg) {
+                document.body.style.backgroundImage = bg;
+                // Add rudimentary check to see if it's a gradient
+                if (!bg.includes('url')) {
+                     // document.body.style.backgroundColor = 'transparent'; // Let the gradient show
+                }
+            } else {
+                document.body.style.backgroundImage = 'none';
+                document.body.style.backgroundColor = '#f3f4f6';
+            }
+        }
+
+        function updateModel() {
+            const radios = document.getElementsByName('model_choice');
+            for(let radio of radios) {
+                if(radio.checked) {
+                    currentModel = radio.value;
+                    break;
+                }
+            }
+            // Retrigger translation if text exists
+            if (foreignText.value.trim()) {
+                triggerTranslation('f2e');
+            }
+        }
+
+        async function translateText(text, direction) {
+            if (!text.trim()) return;
+
+            statusIndicator.classList.add('active');
+            const lang = langSelect.value;
+            
+            try {
+                const response = await fetch('/api/translate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        model: currentModel,
+                        lang: lang,
+                        direction: direction
+                    }),
+                });
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    console.error('Translation error:', data.error);
+                    // Show error in the target box?
+                    if (direction === 'f2e') englishText.value = "Error: " + data.error;
+                    else foreignText.value = "Error: " + data.error;
+                } else {
+                    if (direction === 'f2e') {
+                        englishText.value = data.translation;
+                    } else {
+                        foreignText.value = data.translation;
+                    }
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+            } finally {
+                statusIndicator.classList.remove('active');
+            }
+        }
+
+        // Create debounced versions of translate function
+        const debouncedTranslateF2E = debounce((text) => translateText(text, 'f2e'), 800);
+        const debouncedTranslateE2F = debounce((text) => translateText(text, 'e2f'), 800);
+
+        // Event Listeners
+        foreignText.addEventListener('input', (e) => {
+            debouncedTranslateF2E(e.target.value);
+        });
+
+        englishText.addEventListener('input', (e) => {
+            // Check if model supports E2F
+            if (currentModel === 'scratch') {
+                // Ideally show a warning or disable typing, but let's just warn in console/UI
+                // For now, let api return error message
+                debouncedTranslateE2F(e.target.value); 
+            } else {
+                debouncedTranslateE2F(e.target.value);
+            }
+        });
+
+        function clearAll() {
+            foreignText.value = '';
+            englishText.value = '';
+        }
+        
+        function triggerTranslation(direction) {
+             if (direction === 'f2e') {
+                 debouncedTranslateF2E(foreignText.value);
+             } else {
+                 debouncedTranslateE2F(englishText.value);
+             }
+        }
+    </script>
 </body>
 </html>
