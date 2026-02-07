@@ -1,3 +1,12 @@
+---
+title: Burmese English Translator
+emoji: 🌍
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+pinned: false
+---
+
 # Multilingual Neural Machine Translation (Project A3)
 
 **Developed by:** Htut Ko Ko (st126010)

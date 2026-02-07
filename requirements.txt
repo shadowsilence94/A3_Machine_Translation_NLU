@@ -1,0 +1,9 @@
+flask
+torch
+torchvision
+torchaudio
+transformers
+sentencepiece
+datasets
+pandas
+numpy
