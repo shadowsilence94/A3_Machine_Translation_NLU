@@ -1,5 +1,5 @@
 ---
-title: Burmese English Translator
+title: My Translator by Ko Ko
 emoji: 🌍
 colorFrom: blue
 colorTo: indigo
