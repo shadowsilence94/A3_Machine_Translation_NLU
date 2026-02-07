@@ -10,10 +10,10 @@
             --primary-color: #2563eb;
             --secondary-color: #1e40af;
             --bg-color: #f3f4f6;
-            --panel-bg: rgba(255, 255, 255, 0.95); /* Slightly transparent */
+            --panel-bg: rgba(255, 255, 255, 0.4); /* More transparent for glass effect */
             --text-color: #1f2937;
-            --border-color: #e5e7eb;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --border-color: rgba(255, 255, 255, 0.3);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
         }
 
         body {
@@ -35,14 +35,16 @@
         .container {
             width: 95%;
             max-width: 1200px;
-            background-color: var(--panel-bg);
-            border-radius: 1rem;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1.5rem;
             box-shadow: var(--shadow);
-            padding: 2rem;
+            padding: 2.5rem;
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
-            backdrop-filter: blur(5px); /* Nice glass effect */
+            backdrop-filter: blur(12px); /* Premium glass effect */
+            -webkit-backdrop-filter: blur(12px);
         }
         
         .disclaimer {
@@ -171,21 +173,25 @@
         textarea {
             flex-grow: 1;
             width: 100%;
-            padding: 1rem;
+            padding: 1.25rem;
+            background: rgba(255, 255, 255, 0.2);
             border: 1px solid var(--border-color);
-            border-radius: 0.75rem;
+            border-radius: 1rem;
             font-family: inherit;
             font-size: 1.1rem;
             line-height: 1.6;
+            color: var(--text-color);
             resize: none;
             outline: none;
-            transition: all 0.2s;
-            box-sizing: border-box; 
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            backdrop-filter: blur(4px);
         }
 
         textarea:focus {
+            background: rgba(255, 255, 255, 0.3);
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
         }
         
         /* Placeholder styling */
@@ -232,10 +238,13 @@
             width: 100%;
             text-align: center;
             padding: 1rem;
-            color: #6b7280;
-            font-size: 0.8rem;
-            background-color: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(5px);
+            color: #374151;
+            font-size: 0.85rem;
+            font-weight: 500;
+            background-color: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border-color);
         }
     </style>
 </head>
